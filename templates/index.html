@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Swap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin: 10px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Face Swap</h1>
+
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="source-image" name="source_image" accept="image/*" required><br>
+        <input type="file" id="dest-image" name="dest_image" accept="image/*" required><br>
+        <button type="submit">Swap Faces</button>
+    </form>
+
+    <div id="result">
+        <p>Result:</p>
+        <img id="result-image" src="" alt="Result Image" style="display: none;">
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const sourceImage = document.getElementById('source-image').files[0];
+            const destImage = document.getElementById('dest-image').files[0];
+
+            if (!sourceImage || !destImage) {
+                alert('Please select both images');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('source_image', sourceImage);
+            formData.append('dest_image', destImage);
+
+            const response = await fetch('/swap', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.result_image) {
+                const resultImageElement = document.getElementById('result-image');
+                resultImageElement.src = result.result_image;
+                resultImageElement.style.display = 'block';
+            } else {
+                alert('Something went wrong!');
+            }
+        });
+    </script>
+
+</body>
+</html>
