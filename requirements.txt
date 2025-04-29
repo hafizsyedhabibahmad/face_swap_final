@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+gradio-client
+Pillow
+retry
+cachetools
+python-dotenv
